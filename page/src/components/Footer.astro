@@ -1,0 +1,31 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-gray-100 dark:bg-gray-800 py-8 mt-16 transition-colors">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="text-gray-600 dark:text-gray-400 text-sm mb-4 md:mb-0">
+        © {currentYear} Julián Úsuga Ortiz. All rights reserved.
+      </div>
+      <div class="flex space-x-6">
+        <a
+          href="https://github.com/julianusor"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        >
+          GitHub
+        </a>
+        <a
+          href="https://twitter.com/julianusor"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        >
+          Twitter
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About Me"
+  description="Learn more about Julián Úsuga Ortiz"
+>
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-8 text-gray-900 dark:text-white">About Me</h1>
+
+    <div class="prose prose-lg dark:prose-invert max-w-none">
+      <p>Hi, my name is Julián Úsuga Ortiz!</p>
+
+      <p>
+        I'm a Statistician interested in Machine Learning, Automatization, and Business Intelligence.
+      </p>
+
+      <h2>My Projects</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
+        <a
+          href="/real-estate"
+          class="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow"
+        >
+          <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+            Real Estate Apartments Dashboard
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Monitor real estate prices and trends in the market.
+          </p>
+        </a>
+
+        <a
+          href="/food-prices"
+          class="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow"
+        >
+          <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+            Food Price Tracker
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Track food prices and analyze market trends.
+          </p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
