@@ -5,7 +5,6 @@ date: 2026-02-10
 categories: [howto, claude, tools]
 description: This guide explains the core concepts, agents, and tools available in Claude Code, and shows a practical case of running multiple agents in parallel.
 image: /images/claude-code-guide-cover.png
-layout: ../../layouts/BlogPost.astro
 ---
 
 ## Introduction
@@ -14,19 +13,17 @@ This guide explains the core concepts, agents, and tools available in **Claude C
 
 ## Key Concepts
 
-<dl>
-  <dt>**Memory**</dt>
-  <dd>Markdown files with project context. Location: `~/.claude/projects/<project>/memory/`. Read-only for agents.</dd>
+### Memory
+Markdown files with project context. Location: `~/.claude/projects/<project>/memory/`. Read-only for agents.
 
-  <dt>**Skills**</dt>
-  <dd>Packaged prompts for common tasks. Location: `~/.claude/skills/`. Invoked like `/skill-name`.</dd>
+### Skills
+Packaged prompts for common tasks. Location: `~/.claude/skills/`. Invoked like `/skill-name`.
 
-  <dt>**Agents / Sub-agents**</dt>
-  <dd>Separate Claude instances working in parallel (spawned via Task tool).</dd>
+### Agents / Sub-agents
+Separate Claude instances working in parallel (spawned via Task tool).
 
-  <dt>**MCP Servers**</dt>
-  <dd>Services that connect Claude to external tools via Model Context Protocol (configured in `~/.claude/mcp.json`).</dd>
-</dl>
+### MCP Servers
+Services that connect Claude to external tools via Model Context Protocol (configured in `~/.claude/mcp.json`).
 
 ## Sub-Agent Types
 
@@ -62,7 +59,7 @@ Structure your prompt like this:
 
 ### Example (Content Agent)
 
-```text
+```
 Eres el CONTENT & CONTEXT AGENT para <Project>.
 
 ## Objetivo
@@ -104,26 +101,13 @@ Choose the pattern that fits project size and modularity:
 
 ## Tips & Tricks
 
-:::tip
-Use agents for broad or multi-file work; do small edits yourself.
-:::
+**Use agents for broad or multi-file work; do small edits yourself.**
 
-:::caution
 Parallelize truly independent tasks — avoid parallelizing dependent steps.
-:::
 
 > **Note**: Agents can access prior conversation history and project files, but not changes made after they start or other agents' live results.
 
 ## Full Workflow Example
-
-```mermaid
-graph LR
-    A[User Request] --> B[Launch 3 Agents]
-    B --> C[Agents Report]
-    C --> D[Claude Synthesizes]
-    D --> E[Save to Memory]
-    E --> F[Commit & Push]
-```
 
 1. User requests an AI-first homepage
 2. Launch 3 specialized agents in parallel
@@ -151,12 +135,12 @@ graph LR
 
 ## Resources
 
-- [Skills docs](file://~/.claude/skills/README.md) — Local documentation
+- [Skills docs](https://github.com/anthropics/claude-code) — Skills documentation
 - [MCP Protocol](https://modelcontextprotocol.io) — Model Context Protocol specification
 - [Claude Code GitHub](https://github.com/anthropics/claude-code) — Official repository
 
 ## Conclusion
 
-Claude Code represents a significant shift in how developers interact with AI tools. By leveraging **memory**, **skills**, and **parallel agents**, you can dramatically improve your development workflow. 
+Claude Code represents a significant shift in how developers interact with AI tools. By leveraging **memory**, **skills**, and **parallel agents**, you can dramatically improve your development workflow.
 
 Start with simple tasks and gradually build up to complex multi-agent workflows as you become more comfortable with the system.
