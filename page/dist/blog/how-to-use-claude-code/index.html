@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="en" class="scroll-smooth"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="This guide explains the core concepts, agents, and tools available in Claude Code, and shows a practical case of running multiple agents in parallel."><meta name="generator" content="Astro v5.17.1"><!-- Canonical URL --><link rel="canonical" href="https://julianusor.github.io/blog/how-to-use-claude-code/"><!-- RSS Feed --><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://julianusor.github.io/blog/how-to-use-claude-code/"><meta property="og:title" content="How to Use Claude Code - Julián Úsuga Ortiz"><meta property="og:description" content="This guide explains the core concepts, agents, and tools available in Claude Code, and shows a practical case of running multiple agents in parallel."><meta property="og:image" content="https://julianusor.github.io/profile.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://julianusor.github.io/blog/how-to-use-claude-code/"><meta property="twitter:title" content="How to Use Claude Code - Julián Úsuga Ortiz"><meta property="twitter:description" content="This guide explains the core concepts, agents, and tools available in Claude Code, and shows a practical case of running multiple agents in parallel."><meta property="twitter:image" content="https://julianusor.github.io/profile.jpg"><meta property="twitter:site" content="@julianusor"><!-- Favicon --><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" href="/favicon.ico"><title>How to Use Claude Code - Julián Úsuga Ortiz</title><link rel="stylesheet" href="/_astro/about-me.90drZP0T.css"></head> <body class="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"> <nav class="fixed top-0 w-full bg-white dark:bg-gray-900 shadow-md z-50 transition-colors"> <div class="container mx-auto px-4"> <div class="flex items-center justify-between h-16"> <!-- Logo/Brand --> <a href="/" class="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+Julián Úsuga Ortiz
+</a> <!-- Desktop Navigation --> <div class="hidden md:flex items-center space-x-8"> <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> Home </a><a href="/about-me" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> About Me </a><a href="/real-estate" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> Real Estate Monitor </a><a href="/food-prices" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> Food Price Monitor </a> <!-- Social Links --> <div class="flex items-center space-x-4"> <a href="https://github.com/julianusor" target="_blank" rel="noopener noreferrer" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" aria-label="github"> <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"> <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path> </svg>  </a><a href="https://twitter.com/julianusor" target="_blank" rel="noopener noreferrer" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" aria-label="twitter">  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"> <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path> </svg> </a> <!-- Dark Mode Toggle --> <button id="theme-toggle" type="button" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" aria-label="Toggle dark mode"> <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"> <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path> </svg> <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"> <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path> </svg> </button> </div> </div> <!-- Mobile menu button --> <button id="mobile-menu-button" type="button" class="md:hidden text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400" aria-label="Toggle menu"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg> </button> </div> <!-- Mobile Navigation --> <div id="mobile-menu" class="hidden md:hidden pb-4"> <a href="/" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> Home </a><a href="/about-me" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> About Me </a><a href="/real-estate" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> Real Estate Monitor </a><a href="/food-prices" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"> Food Price Monitor </a> </div> </div> </nav> <script type="module">const n=typeof localStorage<"u"&&localStorage.getItem("theme")?localStorage.getItem("theme"):window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";n==="light"?document.documentElement.classList.remove("dark"):document.documentElement.classList.add("dark");window.localStorage.setItem("theme",n);const o=()=>{const e=document.documentElement;e.classList.toggle("dark");const t=e.classList.contains("dark");localStorage.setItem("theme",t?"dark":"light")};document.getElementById("theme-toggle")?.addEventListener("click",o);document.getElementById("mobile-menu-button")?.addEventListener("click",()=>{document.getElementById("mobile-menu")?.classList.toggle("hidden")});const d=()=>{const e=document.getElementById("theme-toggle-dark-icon"),t=document.getElementById("theme-toggle-light-icon");document.documentElement.classList.contains("dark")?(e?.classList.remove("hidden"),t?.classList.add("hidden")):(e?.classList.add("hidden"),t?.classList.remove("hidden"))};d();document.getElementById("theme-toggle")?.addEventListener("click",()=>{setTimeout(d,0)});</script> <main class="flex-grow container mx-auto px-4 pt-20 pb-8">  <article class="max-w-4xl mx-auto"> <!-- Header --> <header class="mb-8"> <div class="mb-6 rounded-lg overflow-hidden"> <img src="/posts/how-to-use-claude-code/claude-code-guide-cover.png" alt="How to Use Claude Code" class="w-full h-auto object-cover"> </div> <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white"> How to Use Claude Code </h1> <div class="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4"> <div class="flex items-center"> <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path> </svg> <span>Julian Úsuga</span> </div> <div class="flex items-center"> <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path> </svg> <time datetime="2026-02-10T00:00:00.000Z">February 10, 2026</time> </div> </div> <div class="flex flex-wrap gap-2"> <span class="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"> howto </span><span class="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"> claude </span><span class="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"> tools </span> </div> </header> <!-- Content --> <div class="prose prose-lg dark:prose-invert max-w-none
+      prose-headings:font-bold
+      prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4
+      prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3
+      prose-p:mb-4 prose-p:leading-relaxed
+      prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+      prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+      prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800
+      prose-img:rounded-lg prose-img:shadow-lg
+      prose-ul:list-disc prose-ul:ml-6
+      prose-ol:list-decimal prose-ol:ml-6
+      prose-li:mb-2
+      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic
+    ">  <h2 id="introduction">Introduction</h2>
+<p>This guide explains the core concepts, agents, and tools available in <strong>Claude Code</strong>, and shows a practical case of running multiple agents in parallel.</p>
+<h2 id="key-concepts">Key Concepts</h2>
+<h3 id="memory">Memory</h3>
+<p>Markdown files with project context. Location: <code>~/.claude/projects/&lt;project&gt;/memory/</code>. Read-only for agents.</p>
+<h3 id="skills">Skills</h3>
+<p>Packaged prompts for common tasks. Location: <code>~/.claude/skills/</code>. Invoked like <code>/skill-name</code>.</p>
+<h3 id="agents--sub-agents">Agents / Sub-agents</h3>
+<p>Separate Claude instances working in parallel (spawned via Task tool).</p>
+<h3 id="mcp-servers">MCP Servers</h3>
+<p>Services that connect Claude to external tools via Model Context Protocol (configured in <code>~/.claude/mcp.json</code>).</p>
+<h2 id="sub-agent-types">Sub-Agent Types</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Type</th><th>Use Case</th><th>Speed</th></tr></thead><tbody><tr><td><strong>General-purpose</strong></td><td>Complex multi-step tasks, research, analysis</td><td>Medium</td></tr><tr><td><strong>Explore</strong></td><td>Quick codebase/file discovery (Glob, Grep, Read)</td><td>Fast</td></tr><tr><td><strong>Plan</strong></td><td>Architecture and implementation design before coding</td><td>Medium</td></tr><tr><td><strong>Bash</strong></td><td>Run terminal commands when needed</td><td>Fast</td></tr></tbody></table>
+<h2 id="tools-overview">Tools Overview</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tool</th><th>Description</th></tr></thead><tbody><tr><td><code>Read(file_path)</code></td><td>Read a file</td></tr><tr><td><code>Write(file_path, content)</code></td><td>Create a new file</td></tr><tr><td><code>Edit(old, new)</code></td><td>Modify existing files</td></tr><tr><td><code>Glob(pattern)</code></td><td>Find files by pattern</td></tr><tr><td><code>Grep(pattern)</code></td><td>Search file contents</td></tr><tr><td><code>Bash(command)</code></td><td>Run shell commands</td></tr><tr><td><code>Task(subagent_type, prompt)</code></td><td>Launch sub-agents</td></tr><tr><td><code>WebFetch(url, prompt)</code> / <code>WebSearch(query)</code></td><td>Web interactions</td></tr></tbody></table>
+<h2 id="anatomy-of-an-effective-agent-prompt">Anatomy of an Effective Agent Prompt</h2>
+<p>Structure your prompt like this:</p>
+<ol>
+<li><strong>Agent identification</strong>: who you are and the project</li>
+<li><strong>Objective</strong>: a clear, specific goal</li>
+<li><strong>Context</strong>: relevant project info and files</li>
+<li><strong>Deliverables</strong>: detailed list of outputs</li>
+<li><strong>Output format</strong>: exact format required for copy-paste or PR-ready content</li>
+</ol>
+<h3 id="example-content-agent">Example (Content Agent)</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Eres el CONTENT &amp; CONTEXT AGENT para &lt;Project&gt;.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## Objetivo</span></span>
+<span class="line"><span>Reescribir secciones clave para posicionar el sitio como AI-first.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## Contexto</span></span>
+<span class="line"><span>- Archivo: src/routes/(marketing)/+page.svelte</span></span>
+<span class="line"><span>- Servicios actuales: 3 (expandir a 5)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## Tarea</span></span>
+<span class="line"><span>1. Reescribir hero section</span></span>
+<span class="line"><span>2. Actualizar stats</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## Formato</span></span>
+<span class="line"><span>Proveer textos exactos listos para pegar.</span></span></code></pre>
+<h2 id="case-study-3-agents-in-parallel">Case Study: 3 Agents in Parallel</h2>
+<h3 id="task-distribution">Task Distribution</h3>
+<ul>
+<li><strong>Task 1 — Content Agent</strong>: Update copy to position as AI experts</li>
+<li><strong>Task 2 — Brand Protection Agent</strong>: Audit brand, legal, credibility</li>
+<li><strong>Task 3 — Programmer Agent</strong>: Review code structure and bugs</li>
+</ul>
+<h3 id="benefits">Benefits</h3>
+<ul>
+<li><strong>Speed</strong>: parallel execution saved time</li>
+<li><strong>Specialization</strong>: each agent focuses on distinct concerns</li>
+<li><strong>Full context</strong>: agents receive project history and files</li>
+</ul>
+<h2 id="effective-patterns">Effective Patterns</h2>
+<p>Choose the pattern that fits project size and modularity:</p>
+<ul>
+<li><strong>By specialization</strong>: content / design / legal</li>
+<li><strong>By file/module</strong>: frontend / backend / DB</li>
+<li><strong>By phase</strong>: research / design / implementation</li>
+</ul>
+<h2 id="tips--tricks">Tips &amp; Tricks</h2>
+<p><strong>Use agents for broad or multi-file work; do small edits yourself.</strong></p>
+<p>Parallelize truly independent tasks — avoid parallelizing dependent steps.</p>
+<blockquote>
+<p><strong>Note</strong>: Agents can access prior conversation history and project files, but not changes made after they start or other agents’ live results.</p>
+</blockquote>
+<h2 id="full-workflow-example">Full Workflow Example</h2>
+<ol>
+<li>User requests an AI-first homepage</li>
+<li>Launch 3 specialized agents in parallel</li>
+<li>Agents report results and Claude synthesizes changes</li>
+<li>Save reports to <code>memory/</code>, commit and push to Git</li>
+</ol>
+<h2 id="essential-commands">Essential Commands</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Command</th><th>Description</th></tr></thead><tbody><tr><td><code>/tasks</code></td><td>List active tasks</td></tr><tr><td><code>/install &lt;skill&gt;</code></td><td>Install a skill</td></tr><tr><td><code>/skills</code></td><td>List available skills</td></tr><tr><td><code>/commit</code></td><td>Commit changes</td></tr><tr><td><code>/review-pr &lt;id&gt;</code></td><td>Review pull request</td></tr><tr><td><code>EnterPlanMode()</code> / <code>ExitPlanMode()</code></td><td>Planning sessions</td></tr></tbody></table>
+<h2 id="next-steps">Next Steps</h2>
+<p><strong>Level 1</strong>: Use <code>Task</code> for small parallel searches and save findings to memory.</p>
+<p><strong>Level 2</strong>: Launch 3 agents for a complex task and create a custom skill.</p>
+<p><strong>Level 3</strong>: Design a 5+ agent workflow and integrate a custom MCP server.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/skills">Skills docs</a> — Skills documentation</li>
+<li><a href="https://modelcontextprotocol.io">MCP Protocol</a> — Model Context Protocol specification</li>
+<li><a href="https://github.com/anthropics/claude-code">Claude Code GitHub</a> — Official repository</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Claude Code represents a significant shift in how developers interact with AI tools. By leveraging <strong>memory</strong>, <strong>skills</strong>, and <strong>parallel agents</strong>, you can dramatically improve your development workflow.</p>
+<p>Start with simple tasks and gradually build up to complex multi-agent workflows as you become more comfortable with the system.</p>  </div> <!-- Back to blog link --> <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700"> <a href="/" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"> <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path> </svg>
+Back to all posts
+</a> </div> </article>  </main> <footer class="bg-gray-100 dark:bg-gray-800 py-8 mt-16 transition-colors"> <div class="container mx-auto px-4"> <div class="flex flex-col md:flex-row justify-between items-center"> <div class="text-gray-600 dark:text-gray-400 text-sm mb-4 md:mb-0">
+© 2026 Julián Úsuga Ortiz. All rights reserved.
+</div> <div class="flex space-x-6"> <a href="https://github.com/julianusor" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+GitHub
+</a> <a href="https://twitter.com/julianusor" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+Twitter
+</a> </div> </div> </div> </footer> </body></html>
