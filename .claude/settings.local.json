@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init)",
+      "Bash(xcopy /Y /I \"posts\\\\welcome\\\\thumbnail.jpg\" \"page\\\\public\\\\posts\\\\welcome\"\" && xcopy /Y /I \"postsdbms_speed*\" \"pagepublicpostsdbms_speed\"\")",
+      "Bash(xcopy /Y /I \"posts\\\\post-with-code\\\\*\" \"page\\\\public\\\\posts\\\\post-with-code\"\" && xcopy /Y /I \"postssurvival_dhs*\" \"pagepublicpostssurvival_dhs\"\")",
+      "Bash(xcopy:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run dev:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git rm:*)"
+    ]
+  }
+}
