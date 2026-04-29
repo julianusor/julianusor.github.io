@@ -5,94 +5,106 @@ interface Props {
   title: string;
   author: string;
   date: Date;
+  modified?: Date;
   categories?: string[];
   image?: string;
   description?: string;
 }
 
-const { title, author, date, categories, image, description } = Astro.props;
+const { title, author, date, modified, categories, image, description } = Astro.props;
 
-const formattedDate = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-}).format(date);
+function formatDate(d: Date) {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(d);
+}
+
+const formattedDate = formatDate(date);
+const formattedModified = modified ? formatDate(modified) : null;
+const showModified = formattedModified && formattedModified !== formattedDate;
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="max-w-4xl mx-auto">
-    <!-- Header -->
-    <header class="mb-8">
+  <article class="max-w-3xl mx-auto">
+    <div class="rounded-3xl border border-white/40 dark:border-white/10 bg-white/65 dark:bg-white/5 backdrop-blur-xl shadow-xl shadow-slate-900/5 overflow-hidden">
       {image && (
-        <div class="mb-6 rounded-lg overflow-hidden">
+        <div class="aspect-[21/9] overflow-hidden">
           <img
             src={image}
             alt={title}
-            class="w-full h-auto object-cover"
+            class="w-full h-full object-cover"
           />
         </div>
       )}
 
-      <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
-        {title}
-      </h1>
+      <div class="p-6 md:p-10">
+        <!-- Header -->
+        <header class="mb-8">
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-5 text-slate-900 dark:text-white">
+            {title}
+          </h1>
 
-      <div class="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
-        <div class="flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-          <span>{author}</span>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600 dark:text-slate-400 mb-5">
+            <span class="font-medium text-slate-700 dark:text-slate-300">{author}</span>
+            <span aria-hidden="true">·</span>
+            <span>
+              <span class="text-slate-500 dark:text-slate-500">Posted </span>
+              <time datetime={date.toISOString()}>{formattedDate}</time>
+            </span>
+            {showModified && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>
+                  <span class="text-slate-500 dark:text-slate-500">Updated </span>
+                  <time datetime={modified!.toISOString()}>{formattedModified}</time>
+                </span>
+              </>
+            )}
+          </div>
+
+          {categories && categories.length > 0 && (
+            <div class="flex flex-wrap gap-1.5">
+              {categories.map(category => (
+                <span class="px-2.5 py-0.5 text-xs rounded-full border border-violet-300/40 dark:border-violet-300/20 bg-violet-100/60 dark:bg-violet-400/10 text-violet-800 dark:text-violet-200 backdrop-blur-sm">
+                  {category}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <!-- Content -->
+        <div class="prose prose-lg dark:prose-invert max-w-none
+          prose-headings:font-bold prose-headings:tracking-tight
+          prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
+          prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+          prose-p:leading-relaxed
+          prose-a:text-violet-700 dark:prose-a:text-violet-300 prose-a:no-underline hover:prose-a:underline
+          prose-code:bg-slate-200/60 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal prose-code:before:content-none prose-code:after:content-none
+          prose-pre:bg-slate-900/95 dark:prose-pre:bg-black/40 prose-pre:border prose-pre:border-white/10 prose-pre:backdrop-blur-sm
+          prose-img:rounded-xl prose-img:shadow-lg
+          prose-blockquote:border-l-4 prose-blockquote:border-violet-400 prose-blockquote:bg-violet-50/50 dark:prose-blockquote:bg-violet-900/10 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:py-1
+          prose-table:text-sm
+          prose-th:bg-white/40 dark:prose-th:bg-white/5
+        ">
+          <slot />
         </div>
 
-        <div class="flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <time datetime={date.toISOString()}>{formattedDate}</time>
+        <!-- Back to blog link -->
+        <div class="mt-12 pt-8 border-t border-slate-200/60 dark:border-white/10">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 text-violet-700 dark:text-violet-300 hover:underline"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to all posts
+          </a>
         </div>
       </div>
-
-      {categories && categories.length > 0 && (
-        <div class="flex flex-wrap gap-2">
-          {categories.map(category => (
-            <span class="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
-              {category}
-            </span>
-          ))}
-        </div>
-      )}
-    </header>
-
-    <!-- Content -->
-    <div class="prose prose-lg dark:prose-invert max-w-none
-      prose-headings:font-bold
-      prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4
-      prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3
-      prose-p:mb-4 prose-p:leading-relaxed
-      prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-      prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
-      prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800
-      prose-img:rounded-lg prose-img:shadow-lg
-      prose-ul:list-disc prose-ul:ml-6
-      prose-ol:list-decimal prose-ol:ml-6
-      prose-li:mb-2
-      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic
-    ">
-      <slot />
-    </div>
-
-    <!-- Back to blog link -->
-    <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-      <a
-        href="/"
-        class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-      >
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Back to all posts
-      </a>
     </div>
   </article>
 </BaseLayout>

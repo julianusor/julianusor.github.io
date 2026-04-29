@@ -6,39 +6,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="About Me"
   description="Learn more about Julián Úsuga Ortiz"
 >
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-4xl font-bold mb-8 text-gray-900 dark:text-white">About Me</h1>
+  <div class="max-w-3xl mx-auto">
+    <div class="rounded-3xl border border-white/40 dark:border-white/10 bg-white/65 dark:bg-white/5 backdrop-blur-xl shadow-xl shadow-slate-900/5 p-8 md:p-12">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-slate-900 dark:text-white">About Me</h1>
 
-    <div class="prose prose-lg dark:prose-invert max-w-none">
-      <p>Hi, my name is Julián Úsuga Ortiz!</p>
+      <div class="prose prose-lg dark:prose-invert max-w-none
+        prose-a:text-violet-700 dark:prose-a:text-violet-300 prose-a:no-underline hover:prose-a:underline">
+        <p>Hi, my name is Julián Úsuga Ortiz!</p>
 
-      <p>
-        I'm a Statistician interested in Machine Learning, Automatization, and Business Intelligence.
-      </p>
+        <p>
+          I'm a Statistician interested in Machine Learning, Automatization, and Business Intelligence.
+        </p>
 
-      <h2>My Projects</h2>
+        <h2>My Projects</h2>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
         <a
           href="/real-estate"
-          class="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow"
+          class="group block rounded-2xl border border-white/40 dark:border-white/10 bg-white/55 dark:bg-white/5 backdrop-blur-md p-6 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/75 dark:hover:bg-white/10 shadow-lg shadow-slate-900/5"
         >
-          <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+          <h3 class="text-lg font-semibold mb-2 text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
             Real Estate Apartments Dashboard
           </h3>
-          <p class="text-gray-600 dark:text-gray-300">
+          <p class="text-sm text-slate-600 dark:text-slate-300">
             Monitor real estate prices and trends in the market.
           </p>
         </a>
 
         <a
           href="/food-prices"
-          class="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow"
+          class="group block rounded-2xl border border-white/40 dark:border-white/10 bg-white/55 dark:bg-white/5 backdrop-blur-md p-6 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/75 dark:hover:bg-white/10 shadow-lg shadow-slate-900/5"
         >
-          <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+          <h3 class="text-lg font-semibold mb-2 text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
             Food Price Tracker
           </h3>
-          <p class="text-gray-600 dark:text-gray-300">
+          <p class="text-sm text-slate-600 dark:text-slate-300">
             Track food prices and analyze market trends.
           </p>
         </a>

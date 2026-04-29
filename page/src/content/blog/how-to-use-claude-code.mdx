@@ -2,145 +2,187 @@
 title: How to Use Claude Code
 author: Julian Úsuga
 date: 2026-02-10
+modified: 2026-04-29
 categories: [howto, claude, tools]
-description: This guide explains the core concepts, agents, and tools available in Claude Code, and shows a practical case of running multiple agents in parallel.
+description: A practical guide to Claude Code — slash commands, sub-agents, hooks, skills, and parallel workflows. Updated April 2026 with the commands that actually matter.
 image: /posts/how-to-use-claude-code/claude-code-guide-cover.png
 ---
 
 ## Introduction
 
-This guide explains the core concepts, agents, and tools available in **Claude Code**, and shows a practical case of running multiple agents in parallel.
+This guide covers the parts of **Claude Code** that have the highest leverage in day-to-day work: slash commands, sub-agents, skills, and hooks. It is written for someone who has Claude Code installed and wants to move past basic prompting.
+
+The April 2026 update reflects how the tool has shifted: there are more built-in slash commands, hooks are now the right way to enforce automated behavior, and `/loop` plus `/schedule` open up recurring and remote workflows that didn't exist when this post was first written.
 
 ## Key Concepts
 
 ### Memory
-Markdown files with project context. Location: `~/.claude/projects/<project>/memory/`. Read-only for agents.
+Markdown files that persist context across sessions. Each project has its own folder under `~/.claude/projects/<project>/memory/`, indexed by `MEMORY.md`. Claude reads memory automatically at the start of a session and writes new memories when it learns something durable.
 
 ### Skills
-Packaged prompts for common tasks. Location: `~/.claude/skills/`. Invoked like `/skill-name`.
+Packaged prompts and instructions for recurring tasks. Built-in skills include `/init`, `/review`, `/security-review`, `/loop`, and `/schedule`. Custom skills live in `~/.claude/skills/<name>/SKILL.md` and become invocable as `/<name>`.
 
-### Agents / Sub-agents
-Separate Claude instances working in parallel (spawned via Task tool).
+### Sub-agents
+Separate Claude instances launched in the background via the `Agent` tool. They have their own context window and tool allowlist. Sub-agents shine for research and exploration: their tool noise stays out of the parent conversation.
+
+### Hooks
+Shell commands the harness runs in response to events (tool calls, prompt submission, session start, stop). Hooks are the *only* way to enforce automated behavior — Claude itself can't promise "from now on always do X", but a hook can.
 
 ### MCP Servers
-Services that connect Claude to external tools via Model Context Protocol (configured in `~/.claude/mcp.json`).
+External tool servers that connect via the Model Context Protocol. Configured per-user in `~/.claude/mcp.json` or per-project in `.mcp.json`. MCP is how Claude reaches Gmail, Slack, databases, internal APIs, etc.
 
-## Sub-Agent Types
+## Slash Commands That Earn Their Keep
 
-| Type | Use Case | Speed |
-|------|----------|-------|
-| **General-purpose** | Complex multi-step tasks, research, analysis | Medium |
-| **Explore** | Quick codebase/file discovery (Glob, Grep, Read) | Fast |
-| **Plan** | Architecture and implementation design before coding | Medium |
-| **Bash** | Run terminal commands when needed | Fast |
+These are the commands worth remembering. Type `/help` in the CLI to see the full list — it's longer than what's here, but most of the rest is rarely useful.
 
-## Tools Overview
+### Setup & session management
 
-| Tool | Description |
-|------|-------------|
-| `Read(file_path)` | Read a file |
-| `Write(file_path, content)` | Create a new file |
-| `Edit(old, new)` | Modify existing files |
-| `Glob(pattern)` | Find files by pattern |
-| `Grep(pattern)` | Search file contents |
-| `Bash(command)` | Run shell commands |
-| `Task(subagent_type, prompt)` | Launch sub-agents |
-| `WebFetch(url, prompt)` / `WebSearch(query)` | Web interactions |
+| Command | What it does |
+|---------|--------------|
+| `/init` | Generate a `CLAUDE.md` for the current repo. Run once per project. |
+| `/clear` | Drop conversation history and start fresh. |
+| `/compact` | Summarize long conversations to free up context — cheaper than `/clear` because it preserves intent. |
+| `/cost` | Show token usage and cost for the current session. |
+| `/model` | Switch model (e.g. Opus 4.7 ↔ Sonnet 4.6 ↔ Haiku 4.5). |
+| `/fast` | Toggle fast mode (Opus 4.6 fast variant — same model, faster output). |
+| `/config` | Open the settings UI for theme, model defaults, etc. |
 
-## Anatomy of an Effective Agent Prompt
+### Code review & quality
 
-Structure your prompt like this:
+| Command | What it does |
+|---------|--------------|
+| `/review` | Review a pull request. Run inside the repo; pass a PR number or omit for the current branch. |
+| `/security-review` | Targeted security pass on pending changes. Catches injection, auth gaps, secret leaks. |
+| `/ultrareview` | Multi-agent cloud review (billed). User-triggered only — Claude can't launch this for you. |
 
-1. **Agent identification**: who you are and the project
-2. **Objective**: a clear, specific goal
-3. **Context**: relevant project info and files
-4. **Deliverables**: detailed list of outputs
-5. **Output format**: exact format required for copy-paste or PR-ready content
+### Automation & scheduling
 
-### Example (Content Agent)
+| Command | What it does |
+|---------|--------------|
+| `/loop <interval> <prompt>` | Run a prompt on a recurring interval. Defaults to 10m. Use for "check the deploy every 5 minutes" type tasks. |
+| `/schedule` | Create, list, or delete remote cron agents. These run on Anthropic infrastructure on a schedule. |
+
+### Configuration
+
+| Command | What it does |
+|---------|--------------|
+| `/permissions` | Add, remove, or move tool permissions between user and project settings. |
+| `/hooks` | View configured hooks. Edit `settings.json` to actually add them. |
+| `/agents` | Manage custom sub-agents. |
+| `/mcp` | Manage MCP server connections. |
+
+### The `!` prefix
+
+Type `!` before a shell command to run it directly in the session. Output lands in the conversation, so Claude sees it.
 
 ```
-Eres el CONTENT & CONTEXT AGENT para <Project>.
-
-## Objetivo
-Reescribir secciones clave para posicionar el sitio como AI-first.
-
-## Contexto
-- Archivo: src/routes/(marketing)/+page.svelte
-- Servicios actuales: 3 (expandir a 5)
-
-## Tarea
-1. Reescribir hero section
-2. Actualizar stats
-
-## Formato
-Proveer textos exactos listos para pegar.
+! git log --oneline -20
+! gcloud auth login
 ```
+
+This is the right way to hand Claude the result of an interactive command (auth flows, anything that prompts).
+
+## Sub-Agents
+
+Sub-agents are launched via the `Agent` tool. They run in the background and return a single summary message when done.
+
+| Type | Use case |
+|------|----------|
+| `general-purpose` | Multi-step research and implementation when you don't want the noise in your context. |
+| `Explore` | Fast codebase discovery — globbing, grepping, reading files to answer "how does X work?". |
+| `Plan` | Architectural planning before a non-trivial change. Returns a step-by-step plan, not code. |
+
+You can also define **custom sub-agents** in `~/.claude/agents/<name>.md` with their own system prompt, tool allowlist, and model. Once defined they appear as a `subagent_type` you can pass to `Agent`.
+
+### Forking vs. subagent_type
+
+Calling `Agent` *without* a `subagent_type` creates a **fork** — a copy of the current Claude with full conversation context. Forks share the prompt cache, so they're cheap. Use a fork when you want to delegate work but the agent needs to know everything you know. Use a typed subagent when the work is specialized and a clean context is better.
+
+## Hooks: Making Behavior Stick
+
+If you've ever told Claude "from now on, always run the linter before committing" and watched it forget two messages later, you want a hook.
+
+Hooks live in `~/.claude/settings.json` (user) or `.claude/settings.json` (project). Available events:
+
+- `UserPromptSubmit` — fires when you send a message. Can inject context.
+- `PreToolUse` / `PostToolUse` — fires before/after a specific tool call. Can block or annotate.
+- `SessionStart` — fires once at the start of a session.
+- `Stop` — fires when Claude finishes responding. Useful for notifications.
+
+Example: run `prettier --write` after every `Edit` or `Write`.
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "prettier --write \"$CLAUDE_FILE\"" }]
+      }
+    ]
+  }
+}
+```
+
+The harness, not Claude, runs these. They can't be forgotten.
+
+## Plan Mode
+
+Press **Shift+Tab** to toggle plan mode. In this mode Claude can read and analyze but cannot edit, write, or run side-effect-ful tools. It exits by presenting a plan you approve. Use it for anything you don't want Claude to start coding on immediately.
+
+## Skills
+
+Skills are reusable, namespaced prompt packages. Invoke with `/<skill-name>`. A few worth knowing:
+
+- `/init` — write a `CLAUDE.md` describing the repo.
+- `/review` and `/security-review` — described above.
+- `/loop` and `/schedule` — described above.
+- `/simplify` — review changed code for redundancy and quality, then fix.
+- `/fewer-permission-prompts` — scan transcripts for read-only commands you keep approving and add them to the project allowlist.
+- `/update-config` — modify `settings.json` (permissions, env vars, hooks) safely.
+
+Custom skills are a `SKILL.md` file in `~/.claude/skills/<name>/`. Frontmatter declares the trigger conditions; the body is the prompt the harness loads when the skill fires.
+
+## Anatomy of an Effective Prompt for a Sub-agent
+
+Sub-agents start with **zero context** about your conversation (unless they're forks). Brief them like a colleague who just walked in:
+
+1. **Goal** — one sentence on the outcome.
+2. **Context** — what you've already tried or ruled out, why this matters.
+3. **Scope** — what's in, what's out, what another agent is handling.
+4. **Deliverable** — exact format you want back. Tell them to be terse if you want terse ("under 200 words").
+
+Terse command-style prompts produce shallow work. Spend the tokens on context.
 
 ## Case Study: 3 Agents in Parallel
 
-### Task Distribution
+The original version of this post described running three agents in parallel — content, brand, and code. The pattern still works, but in 2026 it's worth being more disciplined about *when* to parallelize:
 
-- **Task 1 — Content Agent**: Update copy to position as AI experts
-- **Task 2 — Brand Protection Agent**: Audit brand, legal, credibility
-- **Task 3 — Programmer Agent**: Review code structure and bugs
+- **Parallelize independent work.** Three agents reading three different parts of the codebase: yes.
+- **Don't parallelize dependent work.** "One agent writes the schema, another writes the migration that depends on it" — no. The second one will start with a stale view.
+- **Don't parallelize what a single fork can do faster.** If a task is mostly reading with one final synthesis, one fork beats three agents you have to merge.
 
-### Benefits
+A good heuristic: if you'd struggle to write three prompts that don't reference each other, you don't have three parallel tasks — you have one sequential task.
 
-- **Speed**: parallel execution saved time
-- **Specialization**: each agent focuses on distinct concerns
-- **Full context**: agents receive project history and files
+## A Sane Default Workflow
 
-## Effective Patterns
-
-Choose the pattern that fits project size and modularity:
-
-- **By specialization**: content / design / legal
-- **By file/module**: frontend / backend / DB
-- **By phase**: research / design / implementation
-
-## Tips & Tricks
-
-**Use agents for broad or multi-file work; do small edits yourself.**
-
-Parallelize truly independent tasks — avoid parallelizing dependent steps.
-
-> **Note**: Agents can access prior conversation history and project files, but not changes made after they start or other agents' live results.
-
-## Full Workflow Example
-
-1. User requests an AI-first homepage
-2. Launch 3 specialized agents in parallel
-3. Agents report results and Claude synthesizes changes
-4. Save reports to `memory/`, commit and push to Git
-
-## Essential Commands
-
-| Command | Description |
-|---------|-------------|
-| `/tasks` | List active tasks |
-| `/install <skill>` | Install a skill |
-| `/skills` | List available skills |
-| `/commit` | Commit changes |
-| `/review-pr <id>` | Review pull request |
-| `EnterPlanMode()` / `ExitPlanMode()` | Planning sessions |
-
-## Next Steps
-
-**Level 1**: Use `Task` for small parallel searches and save findings to memory.
-
-**Level 2**: Launch 3 agents for a complex task and create a custom skill.
-
-**Level 3**: Design a 5+ agent workflow and integrate a custom MCP server.
+1. `/init` once when you join a repo.
+2. Use plan mode (Shift+Tab) for anything non-trivial.
+3. Send research and exploration to sub-agents (`Agent` with `Explore` or a fork).
+4. Run `/review` before opening a PR; `/security-review` if it touches auth, input handling, or secrets.
+5. Set hooks for the things you'd otherwise have to remind Claude about every session.
+6. Use `/cost` and `/compact` to stay cheap on long sessions.
 
 ## Resources
 
-- [Skills docs](https://code.claude.com/docs/en/skills) — Skills documentation
-- [MCP Protocol](https://modelcontextprotocol.io) — Model Context Protocol specification
-- [Claude Code GitHub](https://github.com/anthropics/claude-code) — Official repository
+- [Claude Code docs](https://docs.claude.com/en/docs/claude-code) — official documentation
+- [Skills](https://docs.claude.com/en/docs/claude-code/skills) — building and using skills
+- [Hooks](https://docs.claude.com/en/docs/claude-code/hooks) — full event list and examples
+- [MCP Protocol](https://modelcontextprotocol.io) — Model Context Protocol spec
+- [Claude Code GitHub](https://github.com/anthropics/claude-code) — issues and source
 
 ## Conclusion
 
-Claude Code represents a significant shift in how developers interact with AI tools. By leveraging **memory**, **skills**, and **parallel agents**, you can dramatically improve your development workflow.
+Claude Code rewards investment. The first hour is just chatting; the second is when you start configuring hooks, writing custom skills, and chaining sub-agents. By the time you've added a `CLAUDE.md`, three hooks, and one custom skill, the tool feels less like an assistant and more like an environment.
 
-Start with simple tasks and gradually build up to complex multi-agent workflows as you become more comfortable with the system.
+Start with `/init` and a single hook. Add the rest as the friction tells you to.
