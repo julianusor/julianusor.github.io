@@ -30,10 +30,8 @@ Run from `page/`:
 
 ## Deployment
 
-Three workflows live in `.github/workflows/`. Only one is current:
-
-- `deploy-astro.yml` — **the active deploy.** On push to `main`, builds `page/` and publishes via `actions/deploy-pages` (GitHub Pages environment).
-- `build-to-folder.yml` — alternative that force-pushes the build to a `gh-pages` branch. Redundant with the above; do not enable both for the same Pages source.
-- `build-website.yaml` — **legacy, stale.** A Quarto/R/renv pipeline from before the Astro rewrite. It will fail (no Quarto sources exist) but is harmless. Safe to delete if cleanup is requested.
+`deploy-astro.yml` is the only workflow and the only deploy path. On push to `main` it builds `page/` and publishes the artifact via `actions/deploy-pages`. **The Pages source is set to "GitHub Actions"** in repo settings — not a branch. Do not add a workflow that publishes to a `gh-pages` branch: it would be dead weight, and the built-in `pages-build-deployment` (Jekyll) job would run against it and fail, since an Astro build needs `.nojekyll` for its `_astro/` directory.
 
 Because the deploy runs `cd page && npm ci --legacy-peer-deps && npm run build`, anything outside `page/` is ignored by the build.
+
+If a push produces no workflow run at all (check the Actions tab), the cause is repo- or account-level — Actions disabled in settings, or a billing block — not the workflow file.
