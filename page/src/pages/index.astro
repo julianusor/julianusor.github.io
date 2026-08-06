@@ -8,94 +8,183 @@ const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    month: 'short',
+    day: '2-digit'
   }).format(date);
 }
+
+const facts = [
+  { label: 'Focus', value: 'Machine learning · BI' },
+  { label: 'Field', value: 'Statistics' },
+  { label: 'Based in', value: 'Colombia' },
+  { label: 'Writing', value: `${sortedPosts.length} posts` },
+];
+
+const projects = [
+  {
+    href: '/real-estate',
+    index: '01',
+    title: 'Real Estate Monitor',
+    description: 'Apartment price trends across the major cities in Colombia, refreshed from scraped listings.',
+    tags: ['Power BI', 'Scraping'],
+  },
+  {
+    href: '/food-prices',
+    index: '02',
+    title: 'Food Price Monitor',
+    description: 'Weekly food price movements by city and product, tracked from public market data.',
+    tags: ['Power BI', 'Time series'],
+  },
+];
 ---
 
 <BaseLayout
   title="Julián Úsuga Ortiz"
-  description="Personal website and blog about data science, statistics, and software development"
+  description="Statistician working on machine learning, automation, and business intelligence. Writing about data systems, models, and the tooling around them."
 >
   <!-- Hero -->
-  <section class="mb-16">
-    <div class="rounded-3xl border border-white/40 dark:border-white/10 bg-white/55 dark:bg-white/5 backdrop-blur-xl shadow-xl shadow-slate-900/5 p-8 md:p-12">
-      <div class="flex flex-col md:flex-row items-center gap-8">
-        <div class="relative shrink-0">
-          <div class="absolute inset-0 -m-2 rounded-full bg-gradient-to-br from-rose-400/40 via-violet-400/40 to-sky-400/40 blur-xl"></div>
-          <img
-            src="/profile.jpg"
-            alt="Julián Úsuga Ortiz"
-            class="relative w-40 h-40 md:w-48 md:h-48 rounded-full object-cover ring-1 ring-white/60 dark:ring-white/10 shadow-xl"
-          />
+  <section class="grid-lines border-b border-ink-200 py-20 md:py-28 dark:border-ink-800">
+    <div class="grid gap-14 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-8">
+        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400 dark:text-ink-500">
+          Statistician · Data Scientist
+        </p>
+        <h1 class="mt-6 text-4xl font-semibold leading-[1.05] tracking-tightest text-ink-900 md:text-6xl dark:text-white">
+          Building models and the<br class="hidden sm:block" /> systems that carry them.
+        </h1>
+        <p class="mt-7 max-w-xl text-lg leading-relaxed text-ink-600 dark:text-ink-300">
+          I'm Julián Úsuga Ortiz, a statistician working across machine learning, automation,
+          and business intelligence. This site collects my writing on data systems, statistical
+          analysis, and the tooling I build along the way.
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center gap-3">
+          <a
+            href="#writing"
+            class="inline-flex items-center gap-2 bg-ink-900 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-white transition-colors hover:bg-accent dark:bg-white dark:text-ink-950 dark:hover:bg-accent dark:hover:text-white"
+          >
+            Read the writing
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a
+            href="/about-me"
+            class="inline-flex items-center gap-2 border border-ink-300 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-700 transition-colors hover:border-ink-900 hover:text-ink-900 dark:border-ink-700 dark:text-ink-300 dark:hover:border-white dark:hover:text-white"
+          >
+            About me
+          </a>
         </div>
-        <div class="text-center md:text-left">
-          <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-3 text-slate-900 dark:text-white">
-            Julián Úsuga Ortiz
-          </h1>
-          <p class="text-base md:text-lg text-violet-700 dark:text-violet-300 font-medium mb-3">
-            Data Scientist · Statistician · Developer
-          </p>
-          <p class="text-slate-600 dark:text-slate-300 max-w-2xl">
-            Personal site and blog. I write about data science, statistical analysis,
-            database systems, and software development.
-          </p>
-        </div>
+      </div>
+
+      <!-- Fact panel -->
+      <div class="lg:col-span-4">
+        <dl class="border-t border-ink-200 dark:border-ink-800">
+          {facts.map(fact => (
+            <div class="flex items-baseline justify-between gap-6 border-b border-ink-200 py-4 dark:border-ink-800">
+              <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400 dark:text-ink-500">
+                {fact.label}
+              </dt>
+              <dd class="text-right text-sm text-ink-800 dark:text-ink-200">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </div>
   </section>
 
-  <!-- Blog Posts -->
-  <section>
-    <div class="flex items-baseline justify-between mb-8">
-      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-        Recent Posts
+  <!-- Writing -->
+  <section id="writing" class="scroll-mt-24 py-20">
+    <div class="flex items-baseline justify-between border-b border-ink-200 pb-5 dark:border-ink-800">
+      <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500 dark:text-ink-400">
+        Writing
       </h2>
-      <a href="/rss.xml" class="text-sm text-slate-500 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors">
+      <a
+        href="/rss.xml"
+        class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-white"
+      >
         RSS
       </a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {sortedPosts.map((post) => (
-        <a
-          href={`/blog/${post.slug}`}
-          class="group flex flex-col rounded-2xl border border-white/40 dark:border-white/10 bg-white/55 dark:bg-white/5 backdrop-blur-xl shadow-lg shadow-slate-900/5 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-white/70 dark:hover:bg-white/10"
-        >
-          {post.data.image && (
-            <div class="aspect-[16/10] overflow-hidden">
-              <img
-                src={post.data.image}
-                alt={post.data.title}
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-          )}
-          <div class="flex-1 flex flex-col p-6">
-            <time datetime={post.data.date.toISOString()} class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-              {formatDate(post.data.date)}
-            </time>
-
-            <h3 class="text-lg font-semibold mb-2 text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
-              {post.data.title}
-            </h3>
-
-            {post.data.description && (
-              <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 line-clamp-3 flex-1">
-                {post.data.description}
-              </p>
-            )}
-
-            {post.data.categories && post.data.categories.length > 0 && (
-              <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
-                {post.data.categories.slice(0, 3).map((category: string) => (
-                  <span class="px-2 py-0.5 text-[11px] rounded-full border border-violet-300/40 dark:border-violet-300/20 bg-violet-100/60 dark:bg-violet-400/10 text-violet-800 dark:text-violet-200 backdrop-blur-sm">
-                    {category}
-                  </span>
-                ))}
+    <ul>
+      {sortedPosts.map((post, i) => (
+        <li class="group border-b border-ink-200 dark:border-ink-800">
+          <a href={`/blog/${post.slug}`} class="block py-8 transition-colors">
+            <div class="grid gap-4 md:grid-cols-12 md:gap-8">
+              <div class="flex items-baseline gap-4 md:col-span-3 md:block">
+                <span class="font-mono text-[11px] tabular-nums text-ink-300 dark:text-ink-600">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <time
+                  datetime={post.data.date.toISOString()}
+                  class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400 md:mt-2 md:block dark:text-ink-500"
+                >
+                  {formatDate(post.data.date)}
+                </time>
               </div>
-            )}
+
+              <div class="md:col-span-9">
+                <h3 class="text-2xl font-semibold tracking-tight text-ink-900 transition-colors group-hover:text-accent md:text-[28px] dark:text-white dark:group-hover:text-accent-soft">
+                  {post.data.title}
+                </h3>
+
+                {post.data.description && (
+                  <p class="mt-3 max-w-2xl leading-relaxed text-ink-600 dark:text-ink-400">
+                    {post.data.description}
+                  </p>
+                )}
+
+                <div class="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+                  {post.data.categories && post.data.categories.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                      {post.data.categories.slice(0, 3).map((category: string) => (
+                        <span class="border border-ink-200 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-500 dark:border-ink-800 dark:text-ink-400">
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-400 transition-colors group-hover:text-accent dark:text-ink-500 dark:group-hover:text-accent-soft">
+                    Read
+                    <span class="inline-block transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- Projects -->
+  <section class="pb-8">
+    <div class="border-b border-ink-200 pb-5 dark:border-ink-800">
+      <h2 class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500 dark:text-ink-400">
+        Dashboards
+      </h2>
+    </div>
+
+    <div class="grid gap-px bg-ink-200 md:grid-cols-2 dark:bg-ink-800">
+      {projects.map(project => (
+        <a
+          href={project.href}
+          class="group flex flex-col bg-white p-8 transition-colors hover:bg-ink-50 dark:bg-ink-950 dark:hover:bg-ink-900"
+        >
+          <span class="font-mono text-[11px] tabular-nums text-ink-300 dark:text-ink-600">
+            {project.index}
+          </span>
+          <h3 class="mt-6 text-xl font-semibold tracking-tight text-ink-900 transition-colors group-hover:text-accent dark:text-white dark:group-hover:text-accent-soft">
+            {project.title}
+          </h3>
+          <p class="mt-3 flex-grow leading-relaxed text-ink-600 dark:text-ink-400">
+            {project.description}
+          </p>
+          <div class="mt-6 flex flex-wrap gap-2">
+            {project.tags.map(tag => (
+              <span class="border border-ink-200 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-500 dark:border-ink-800 dark:text-ink-400">
+                {tag}
+              </span>
+            ))}
           </div>
         </a>
       ))}

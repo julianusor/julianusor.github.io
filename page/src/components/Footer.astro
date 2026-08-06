@@ -1,37 +1,78 @@
 ---
 const currentYear = new Date().getFullYear();
+
+const columns = [
+  {
+    title: 'Site',
+    links: [
+      { text: 'Index', href: '/' },
+      { text: 'About', href: '/about-me' },
+      { text: 'RSS', href: '/rss.xml' },
+    ],
+  },
+  {
+    title: 'Dashboards',
+    links: [
+      { text: 'Real Estate Monitor', href: '/real-estate' },
+      { text: 'Food Price Monitor', href: '/food-prices' },
+    ],
+  },
+  {
+    title: 'Elsewhere',
+    links: [
+      { text: 'GitHub', href: 'https://github.com/julianusor', external: true },
+      { text: 'Twitter', href: 'https://twitter.com/julianusor', external: true },
+      { text: 'LinkedIn', href: 'https://linkedin.com/in/julian-usuga', external: true },
+    ],
+  },
+];
 ---
 
-<footer class="mt-16 px-3 md:px-6 pb-4">
-  <div class="max-w-6xl mx-auto rounded-2xl border border-white/40 dark:border-white/10 bg-white/55 dark:bg-slate-900/45 backdrop-blur-xl shadow-lg shadow-slate-900/5 px-6 py-5 transition-colors">
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
-      <div class="text-slate-600 dark:text-slate-400 text-sm">
+<footer class="mt-24 border-t border-ink-200 dark:border-ink-800">
+  <div class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+    <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-3">
+          <span class="h-3 w-3 bg-ink-900 dark:bg-ink-100"></span>
+          <span class="text-[15px] font-semibold tracking-tight text-ink-900 dark:text-white">
+            Julián Úsuga
+          </span>
+        </div>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-ink-500 dark:text-ink-400">
+          Statistics, machine learning, and the data infrastructure underneath.
+        </p>
+      </div>
+
+      {columns.map(column => (
+        <div>
+          <h2 class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400 dark:text-ink-500">
+            {column.title}
+          </h2>
+          <ul class="mt-4 space-y-2.5">
+            {column.links.map(link => (
+              <li>
+                <a
+                  href={link.href}
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  class="text-sm text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-white"
+                >
+                  {link.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-14 flex flex-col gap-3 border-t border-ink-100 pt-6 sm:flex-row sm:items-center sm:justify-between dark:border-ink-900">
+      <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400 dark:text-ink-500">
         © {currentYear} Julián Úsuga Ortiz
-      </div>
-      <div class="flex items-center gap-5 text-sm">
-        <a
-          href="https://github.com/julianusor"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors"
-        >
-          GitHub
-        </a>
-        <a
-          href="https://twitter.com/julianusor"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors"
-        >
-          Twitter
-        </a>
-        <a
-          href="/rss.xml"
-          class="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors"
-        >
-          RSS
-        </a>
-      </div>
+      </p>
+      <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400 dark:text-ink-500">
+        Medellín, Colombia
+      </p>
     </div>
   </div>
 </footer>

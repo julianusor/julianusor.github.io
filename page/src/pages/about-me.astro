@@ -1,51 +1,139 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const focusAreas = [
+  {
+    label: 'Machine learning',
+    description: 'Predictive modelling, survival analysis, and turning statistical work into something usable.',
+  },
+  {
+    label: 'Automation',
+    description: 'Pipelines that collect, clean, and refresh data without anyone having to remember to run them.',
+  },
+  {
+    label: 'Business intelligence',
+    description: 'Dashboards and reporting layers that make the numbers legible to the people deciding on them.',
+  },
+];
+
+const projects = [
+  {
+    href: '/real-estate',
+    index: '01',
+    title: 'Real Estate Apartments Dashboard',
+    description: 'Apartment price trends across the major cities in Colombia.',
+  },
+  {
+    href: '/food-prices',
+    index: '02',
+    title: 'Food Price Tracker',
+    description: 'Weekly food prices by city and product, tracked over time.',
+  },
+];
+
+const contact = [
+  { label: 'GitHub', value: 'github.com/julianusor', href: 'https://github.com/julianusor' },
+  { label: 'Twitter', value: '@julianusor', href: 'https://twitter.com/julianusor' },
+  { label: 'LinkedIn', value: 'julian-usuga', href: 'https://linkedin.com/in/julian-usuga' },
+];
 ---
 
 <BaseLayout
-  title="About Me"
-  description="Learn more about Julián Úsuga Ortiz"
+  title="About"
+  description="Julián Úsuga Ortiz — statistician working on machine learning, automation, and business intelligence."
 >
-  <div class="max-w-3xl mx-auto">
-    <div class="rounded-3xl border border-white/40 dark:border-white/10 bg-white/65 dark:bg-white/5 backdrop-blur-xl shadow-xl shadow-slate-900/5 p-8 md:p-12">
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-slate-900 dark:text-white">About Me</h1>
+  <!-- Header -->
+  <section class="border-b border-ink-200 py-20 md:py-24 dark:border-ink-800">
+    <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-400 dark:text-ink-500">
+      About
+    </p>
+    <h1 class="mt-6 max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tightest text-ink-900 md:text-5xl dark:text-white">
+      Julián Úsuga Ortiz
+    </h1>
+    <p class="mt-7 max-w-2xl text-lg leading-relaxed text-ink-600 dark:text-ink-300">
+      I'm a statistician interested in machine learning, automation, and business intelligence.
+      Most of my work sits between the analysis itself and the systems that keep it running —
+      the data collection, the modelling, and the reporting layer people actually look at.
+    </p>
+  </section>
 
-      <div class="prose prose-lg dark:prose-invert max-w-none
-        prose-a:text-violet-700 dark:prose-a:text-violet-300 prose-a:no-underline hover:prose-a:underline">
-        <p>Hi, my name is Julián Úsuga Ortiz!</p>
+  <!-- Focus -->
+  <section class="py-20">
+    <h2 class="border-b border-ink-200 pb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500 dark:border-ink-800 dark:text-ink-400">
+      What I work on
+    </h2>
 
-        <p>
-          I'm a Statistician interested in Machine Learning, Automatization, and Business Intelligence.
-        </p>
+    <dl class="grid gap-px bg-ink-200 md:grid-cols-3 dark:bg-ink-800">
+      {focusAreas.map(area => (
+        <div class="bg-white p-8 dark:bg-ink-950">
+          <dt class="text-lg font-semibold tracking-tight text-ink-900 dark:text-white">
+            {area.label}
+          </dt>
+          <dd class="mt-3 leading-relaxed text-ink-600 dark:text-ink-400">
+            {area.description}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </section>
 
-        <h2>My Projects</h2>
-      </div>
+  <!-- Projects -->
+  <section class="pb-20">
+    <h2 class="border-b border-ink-200 pb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500 dark:border-ink-800 dark:text-ink-400">
+      Projects
+    </h2>
 
-      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-        <a
-          href="/real-estate"
-          class="group block rounded-2xl border border-white/40 dark:border-white/10 bg-white/55 dark:bg-white/5 backdrop-blur-md p-6 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/75 dark:hover:bg-white/10 shadow-lg shadow-slate-900/5"
-        >
-          <h3 class="text-lg font-semibold mb-2 text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
-            Real Estate Apartments Dashboard
-          </h3>
-          <p class="text-sm text-slate-600 dark:text-slate-300">
-            Monitor real estate prices and trends in the market.
-          </p>
-        </a>
+    <ul>
+      {projects.map(project => (
+        <li class="group border-b border-ink-200 dark:border-ink-800">
+          <a href={project.href} class="flex items-baseline gap-6 py-7 md:gap-10">
+            <span class="font-mono text-[11px] tabular-nums text-ink-300 dark:text-ink-600">
+              {project.index}
+            </span>
+            <div class="flex-grow">
+              <h3 class="text-xl font-semibold tracking-tight text-ink-900 transition-colors group-hover:text-accent dark:text-white dark:group-hover:text-accent-soft">
+                {project.title}
+              </h3>
+              <p class="mt-2 leading-relaxed text-ink-600 dark:text-ink-400">
+                {project.description}
+              </p>
+            </div>
+            <span
+              aria-hidden="true"
+              class="text-ink-300 transition-transform group-hover:translate-x-1 group-hover:text-accent dark:text-ink-600 dark:group-hover:text-accent-soft"
+            >
+              →
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-        <a
-          href="/food-prices"
-          class="group block rounded-2xl border border-white/40 dark:border-white/10 bg-white/55 dark:bg-white/5 backdrop-blur-md p-6 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/75 dark:hover:bg-white/10 shadow-lg shadow-slate-900/5"
-        >
-          <h3 class="text-lg font-semibold mb-2 text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
-            Food Price Tracker
-          </h3>
-          <p class="text-sm text-slate-600 dark:text-slate-300">
-            Track food prices and analyze market trends.
-          </p>
-        </a>
-      </div>
-    </div>
-  </div>
+  <!-- Contact -->
+  <section class="pb-8">
+    <h2 class="border-b border-ink-200 pb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500 dark:border-ink-800 dark:text-ink-400">
+      Elsewhere
+    </h2>
+
+    <dl>
+      {contact.map(item => (
+        <div class="flex items-baseline justify-between gap-6 border-b border-ink-200 py-4 dark:border-ink-800">
+          <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400 dark:text-ink-500">
+            {item.label}
+          </dt>
+          <dd>
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-ink-800 transition-colors hover:text-accent dark:text-ink-200 dark:hover:text-accent-soft"
+            >
+              {item.value}
+            </a>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </section>
 </BaseLayout>

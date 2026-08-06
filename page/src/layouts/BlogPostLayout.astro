@@ -26,85 +26,80 @@ const formattedModified = modified ? formatDate(modified) : null;
 const showModified = formattedModified && formattedModified !== formattedDate;
 ---
 
-<BaseLayout title={title} description={description}>
-  <article class="max-w-3xl mx-auto">
-    <div class="rounded-3xl border border-white/40 dark:border-white/10 bg-white/65 dark:bg-white/5 backdrop-blur-xl shadow-xl shadow-slate-900/5 overflow-hidden">
-      {image && (
-        <div class="aspect-[21/9] overflow-hidden">
-          <img
-            src={image}
-            alt={title}
-            class="w-full h-full object-cover"
-          />
-        </div>
+<BaseLayout title={title} description={description} image={image}>
+  <article>
+    <!-- Header -->
+    <header class="border-b border-ink-200 py-16 md:py-20 dark:border-ink-800">
+      <a
+        href="/"
+        class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-white"
+      >
+        <span class="inline-block transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
+        Index
+      </a>
+
+      <h1 class="mt-8 max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tightest text-ink-900 md:text-5xl dark:text-white">
+        {title}
+      </h1>
+
+      {description && (
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-600 dark:text-ink-300">
+          {description}
+        </p>
       )}
 
-      <div class="p-6 md:p-10">
-        <!-- Header -->
-        <header class="mb-8">
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-5 text-slate-900 dark:text-white">
-            {title}
-          </h1>
-
-          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600 dark:text-slate-400 mb-5">
-            <span class="font-medium text-slate-700 dark:text-slate-300">{author}</span>
-            <span aria-hidden="true">·</span>
-            <span>
-              <span class="text-slate-500 dark:text-slate-500">Posted </span>
-              <time datetime={date.toISOString()}>{formattedDate}</time>
-            </span>
-            {showModified && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span>
-                  <span class="text-slate-500 dark:text-slate-500">Updated </span>
-                  <time datetime={modified!.toISOString()}>{formattedModified}</time>
-                </span>
-              </>
-            )}
-          </div>
-
-          {categories && categories.length > 0 && (
-            <div class="flex flex-wrap gap-1.5">
-              {categories.map(category => (
-                <span class="px-2.5 py-0.5 text-xs rounded-full border border-violet-300/40 dark:border-violet-300/20 bg-violet-100/60 dark:bg-violet-400/10 text-violet-800 dark:text-violet-200 backdrop-blur-sm">
-                  {category}
-                </span>
-              ))}
-            </div>
-          )}
-        </header>
-
-        <!-- Content -->
-        <div class="prose prose-lg dark:prose-invert max-w-none
-          prose-headings:font-bold prose-headings:tracking-tight
-          prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
-          prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-          prose-p:leading-relaxed
-          prose-a:text-violet-700 dark:prose-a:text-violet-300 prose-a:no-underline hover:prose-a:underline
-          prose-code:bg-slate-200/60 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal prose-code:before:content-none prose-code:after:content-none
-          prose-pre:bg-slate-900/95 dark:prose-pre:bg-black/40 prose-pre:border prose-pre:border-white/10 prose-pre:backdrop-blur-sm
-          prose-img:rounded-xl prose-img:shadow-lg
-          prose-blockquote:border-l-4 prose-blockquote:border-violet-400 prose-blockquote:bg-violet-50/50 dark:prose-blockquote:bg-violet-900/10 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:py-1
-          prose-table:text-sm
-          prose-th:bg-white/40 dark:prose-th:bg-white/5
-        ">
-          <slot />
-        </div>
-
-        <!-- Back to blog link -->
-        <div class="mt-12 pt-8 border-t border-slate-200/60 dark:border-white/10">
-          <a
-            href="/"
-            class="inline-flex items-center gap-2 text-violet-700 dark:text-violet-300 hover:underline"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to all posts
-          </a>
-        </div>
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400 dark:text-ink-500">
+        <span>{author}</span>
+        <span>
+          Posted <time datetime={date.toISOString()}>{formattedDate}</time>
+        </span>
+        {showModified && (
+          <span>
+            Updated <time datetime={modified!.toISOString()}>{formattedModified}</time>
+          </span>
+        )}
+        {categories && categories.length > 0 && (
+          <span class="text-ink-500 dark:text-ink-400">{categories.join(' · ')}</span>
+        )}
       </div>
+    </header>
+
+    {image && (
+      <div class="mt-12 border border-ink-200 dark:border-ink-800">
+        <img src={image} alt={title} class="w-full" />
+      </div>
+    )}
+
+    <!-- Content -->
+    <div class="py-14 md:py-16">
+      <div class="prose prose-lg max-w-prose dark:prose-invert
+        prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-ink-900 dark:prose-headings:text-white
+        prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-4
+        prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-3
+        prose-p:text-ink-700 dark:prose-p:text-ink-300 prose-p:leading-[1.75]
+        prose-li:text-ink-700 dark:prose-li:text-ink-300
+        prose-strong:text-ink-900 dark:prose-strong:text-white
+        prose-a:text-accent dark:prose-a:text-accent-soft prose-a:font-normal prose-a:underline prose-a:decoration-accent/30 prose-a:underline-offset-4 hover:prose-a:decoration-accent
+        prose-code:font-mono prose-code:text-[0.875em] prose-code:font-normal prose-code:bg-ink-100 dark:prose-code:bg-ink-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-none prose-code:before:content-[''] prose-code:after:content-['']
+        prose-pre:rounded-none prose-pre:border prose-pre:border-ink-200 dark:prose-pre:border-ink-800 prose-pre:bg-ink-50 dark:prose-pre:bg-ink-900 prose-pre:text-ink-800 dark:prose-pre:text-ink-200
+        prose-img:rounded-none prose-img:border prose-img:border-ink-200 dark:prose-img:border-ink-800
+        prose-blockquote:border-l-2 prose-blockquote:border-accent prose-blockquote:pl-5 prose-blockquote:not-italic prose-blockquote:font-normal prose-blockquote:text-ink-600 dark:prose-blockquote:text-ink-400
+        prose-hr:border-ink-200 dark:prose-hr:border-ink-800
+        prose-table:text-sm prose-th:font-mono prose-th:text-[11px] prose-th:uppercase prose-th:tracking-[0.12em] prose-th:text-ink-500
+      ">
+        <slot />
+      </div>
+    </div>
+
+    <!-- Footer navigation -->
+    <div class="border-t border-ink-200 py-10 dark:border-ink-800">
+      <a
+        href="/"
+        class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-500 transition-colors hover:text-accent dark:text-ink-400 dark:hover:text-accent-soft"
+      >
+        <span class="inline-block transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
+        All posts
+      </a>
     </div>
   </article>
 </BaseLayout>
