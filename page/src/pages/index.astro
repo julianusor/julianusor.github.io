@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PostBackdrop from '../components/PostBackdrop.astro';
 
 const allPosts = await getCollection('blog');
 const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -108,8 +109,9 @@ const projects = [
     <ul>
       {sortedPosts.map((post, i) => (
         <li class="group border-b border-ink-200 dark:border-ink-800">
-          <a href={`/blog/${post.slug}`} class="block py-8 transition-colors">
-            <div class="grid gap-4 md:grid-cols-12 md:gap-8">
+          <a href={`/blog/${post.slug}`} class="relative block overflow-hidden py-8 transition-colors">
+            {post.data.image && <PostBackdrop src={post.data.image} />}
+            <div class="relative grid gap-4 md:grid-cols-12 md:gap-8">
               <div class="flex items-baseline gap-4 md:col-span-3 md:block">
                 <span class="font-mono text-[11px] tabular-nums text-ink-300 dark:text-ink-600">
                   {String(i + 1).padStart(2, '0')}

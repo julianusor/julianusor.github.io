@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import PostBackdrop from '../components/PostBackdrop.astro';
 
 interface Props {
   title: string;
@@ -29,46 +30,43 @@ const showModified = formattedModified && formattedModified !== formattedDate;
 <BaseLayout title={title} description={description} image={image}>
   <article>
     <!-- Header -->
-    <header class="border-b border-ink-200 py-16 md:py-20 dark:border-ink-800">
-      <a
-        href="/"
-        class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-white"
-      >
-        <span class="inline-block transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
-        Index
-      </a>
+    <header class="relative overflow-hidden border-b border-ink-200 py-16 md:py-20 dark:border-ink-800">
+      {image && <PostBackdrop src={image} />}
+      <div class="relative">
+        <a
+          href="/"
+          class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-white"
+        >
+          <span class="inline-block transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
+          Index
+        </a>
 
-      <h1 class="mt-8 max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tightest text-ink-900 md:text-5xl dark:text-white">
-        {title}
-      </h1>
+        <h1 class="mt-8 max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tightest text-ink-900 md:text-5xl dark:text-white">
+          {title}
+        </h1>
 
-      {description && (
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-600 dark:text-ink-300">
-          {description}
-        </p>
-      )}
+        {description && (
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-600 dark:text-ink-300">
+            {description}
+          </p>
+        )}
 
-      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400 dark:text-ink-500">
-        <span>{author}</span>
-        <span>
-          Posted <time datetime={date.toISOString()}>{formattedDate}</time>
-        </span>
-        {showModified && (
+        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400 dark:text-ink-500">
+          <span>{author}</span>
           <span>
-            Updated <time datetime={modified!.toISOString()}>{formattedModified}</time>
+            Posted <time datetime={date.toISOString()}>{formattedDate}</time>
           </span>
-        )}
-        {categories && categories.length > 0 && (
-          <span class="text-ink-500 dark:text-ink-400">{categories.join(' · ')}</span>
-        )}
+          {showModified && (
+            <span>
+              Updated <time datetime={modified!.toISOString()}>{formattedModified}</time>
+            </span>
+          )}
+          {categories && categories.length > 0 && (
+            <span class="text-ink-500 dark:text-ink-400">{categories.join(' · ')}</span>
+          )}
+        </div>
       </div>
     </header>
-
-    {image && (
-      <div class="mt-12 border border-ink-200 dark:border-ink-800">
-        <img src={image} alt={title} class="w-full" />
-      </div>
-    )}
 
     <!-- Content -->
     <div class="py-14 md:py-16">
