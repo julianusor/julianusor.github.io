@@ -8,22 +8,25 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Warm paper → espresso scale. Keeps the same `ink-*` API so no
+        // markup has to change, but moves away from the cold blue-grey
+        // "terminal" feel toward something that feels like home.
         ink: {
-          50: '#F6F7F9',
-          100: '#ECEEF1',
-          200: '#DCE0E5',
-          300: '#B9BFC8',
-          400: '#8A929D',
-          500: '#616973',
-          600: '#454B54',
-          700: '#2C3037',
-          800: '#1B1E22',
-          900: '#111316',
-          950: '#08090A',
+          50: '#FBF8F3',
+          100: '#F4EDE2',
+          200: '#E7D9C4',
+          300: '#D3BE9E',
+          400: '#B89E77',
+          500: '#98805D',
+          600: '#72614A',
+          700: '#4B4034',
+          800: '#2E2820',
+          900: '#201B15',
+          950: '#161310',
         },
         accent: {
-          DEFAULT: '#1652F0',
-          soft: '#4C7DFF',
+          DEFAULT: '#B4532A',
+          soft: '#D98E5F',
         },
       },
       fontFamily: {

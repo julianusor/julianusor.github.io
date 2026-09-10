@@ -26,8 +26,8 @@ const socialImageURL = image ? new URL(image, Astro.site) : undefined;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#08090A" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#161310" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FBF8F3" media="(prefers-color-scheme: light)" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
@@ -76,8 +76,8 @@ const socialImageURL = image ? new URL(image, Astro.site) : undefined;
 
     <style is:global>
       ::selection {
-        background-color: #1652F0;
-        color: #fff;
+        background-color: #B4532A;
+        color: #FFF7ED;
       }
       html {
         -webkit-font-smoothing: antialiased;
@@ -85,16 +85,16 @@ const socialImageURL = image ? new URL(image, Astro.site) : undefined;
       /* Hairline grid used as a background texture on hero sections */
       .grid-lines {
         background-image:
-          linear-gradient(to right, rgb(0 0 0 / 0.045) 1px, transparent 1px);
+          linear-gradient(to right, rgb(114 97 74 / 0.12) 1px, transparent 1px);
         background-size: 88px 100%;
       }
       .dark .grid-lines {
         background-image:
-          linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+          linear-gradient(to right, rgb(217 142 95 / 0.10) 1px, transparent 1px);
       }
     </style>
   </head>
-  <body class="min-h-screen flex flex-col bg-white text-ink-900 dark:bg-ink-950 dark:text-ink-100 font-sans">
+  <body class="min-h-screen flex flex-col bg-ink-50 text-ink-900 dark:bg-ink-950 dark:text-ink-100 font-sans">
     <Navbar />
     <main class="flex-grow w-full">
       <div class="mx-auto w-full max-w-6xl px-6 lg:px-10">
