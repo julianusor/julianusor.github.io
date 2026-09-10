@@ -31,6 +31,7 @@ export default {
       },
       fontFamily: {
         sans: ['Inter var', 'Inter', ...defaultTheme.fontFamily.sans],
+        serif: ['Fraunces', 'Georgia', ...defaultTheme.fontFamily.serif],
         mono: ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
       },
       letterSpacing: {
