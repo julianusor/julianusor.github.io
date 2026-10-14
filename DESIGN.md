@@ -10,7 +10,6 @@ colors:
   hairline: "#E7D9C4"
   ink: "#201B15"
   ink-muted: "#72614A"
-  ink-subtle: "#98805D"
   on-ink: "#FBF8F3"
   canvas-dark: "#161310"
   surface-dark: "#201B15"

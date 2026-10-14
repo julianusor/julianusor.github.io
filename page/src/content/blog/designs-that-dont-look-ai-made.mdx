@@ -142,4 +142,4 @@ components:
     padding: 12px 20px
 ```
 
-Writing it caught a real problem. The 10px tags on the home page use `#98805D` on the paper background, which is 3.55:1 contrast, and some metadata uses `#B89E77` at 2.42:1. Both are below the 4.5:1 that WCAG AA requires. The spec now sets tags to `#72614A` (5.62:1). That's the main payoff of making a design system explicit: once the rules are written down, you can check against them, and so can an agent.
+Writing it caught a real problem. The 10px tags on the home page used `#98805D` on the paper background, which is 3.55:1 contrast, and some metadata used `#B89E77` at 2.42:1. Both are below the 4.5:1 that WCAG AA requires. The fix was one rule in the spec, muted text is `#72614A` (5.62:1), applied across the site in 33 class changes. That's the main payoff of making a design system explicit: once the rules are written down, you can check against them, and so can an agent.

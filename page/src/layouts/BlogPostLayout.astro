@@ -35,7 +35,7 @@ const showModified = formattedModified && formattedModified !== formattedDate;
       <div class="relative">
         <a
           href="/"
-          class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-50"
+          class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-50"
         >
           <span class="inline-block transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
           Index
@@ -51,7 +51,7 @@ const showModified = formattedModified && formattedModified !== formattedDate;
           </p>
         )}
 
-        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400 dark:text-ink-500">
+        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-600 dark:text-ink-500">
           <span>{author}</span>
           <span>
             Posted <time datetime={date.toISOString()}>{formattedDate}</time>
@@ -62,7 +62,7 @@ const showModified = formattedModified && formattedModified !== formattedDate;
             </span>
           )}
           {categories && categories.length > 0 && (
-            <span class="text-ink-500 dark:text-ink-400">{categories.join(' · ')}</span>
+            <span class="text-ink-600 dark:text-ink-400">{categories.join(' · ')}</span>
           )}
         </div>
       </div>
@@ -84,7 +84,7 @@ const showModified = formattedModified && formattedModified !== formattedDate;
         prose-img:rounded-none prose-img:border prose-img:border-ink-200 dark:prose-img:border-ink-800
         prose-blockquote:border-l-2 prose-blockquote:border-accent prose-blockquote:pl-5 prose-blockquote:not-italic prose-blockquote:font-normal prose-blockquote:text-ink-600 dark:prose-blockquote:text-ink-400
         prose-hr:border-ink-200 dark:prose-hr:border-ink-800
-        prose-table:text-sm prose-th:font-mono prose-th:text-[11px] prose-th:uppercase prose-th:tracking-[0.12em] prose-th:text-ink-500
+        prose-table:text-sm prose-th:font-mono prose-th:text-[11px] prose-th:uppercase prose-th:tracking-[0.12em] prose-th:text-ink-600
       ">
         <slot />
       </div>
@@ -94,7 +94,7 @@ const showModified = formattedModified && formattedModified !== formattedDate;
     <div class="border-t border-ink-200 py-10 dark:border-ink-800">
       <a
         href="/"
-        class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-500 transition-colors hover:text-accent dark:text-ink-400 dark:hover:text-accent-soft"
+        class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-600 transition-colors hover:text-accent dark:text-ink-400 dark:hover:text-accent-soft"
       >
         <span class="inline-block transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
         All posts
