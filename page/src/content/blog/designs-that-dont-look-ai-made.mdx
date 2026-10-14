@@ -1,0 +1,145 @@
+---
+title: Designs That Don't Look AI-Made
+author: Julian Úsuga
+date: 2026-10-14
+categories: [design, claude, howto]
+description: A hands-on guide to DESIGN.md — grab the design system of Linear, Stripe or Vercel from a catalog, make it yours, validate it, export it to Tailwind, and have Claude Code build with it.
+---
+
+Ask an agent for "a modern landing page" with no other guidance and you get the average of its training data: a purple gradient, a centered hero, three feature cards, and pill buttons. Adjectives like "clean" or "premium" don't help, because they all land on that same average. What changes the output is a spec with exact values, and that spec now has a standard format.
+
+## What DESIGN.md Is
+
+[DESIGN.md](https://github.com/google-labs-code/design.md) is an open format from Google Labs for describing a visual identity to coding agents. It's one Markdown file with two halves:
+
+- **YAML frontmatter with tokens:** `colors`, `typography`, `rounded`, `spacing`, and `components`. These give the agent exact values.
+- **Markdown prose:** explains why those values exist and how to apply them, in a fixed section order: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts.
+
+The `components` block is where it goes beyond colors and fonts. Buttons, cards, and inputs are defined from tokens, and each state gets its own entry. This is from the Linear spec on shadcn.io:
+
+```yaml
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"   # lavender #5e6ad2
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.md}"               # 8px, not a pill
+    padding: 8px 14px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.surface-1}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.md}"
+    padding: 8px 14px
+```
+
+The prose carries the decisions that tokens can't express. The same file says Linear has "no second chromatic color, no atmospheric gradient, no spotlight card", that hierarchy comes from a four-step ladder of surfaces "without drop shadows", and that product screenshots, not illustrations, lead the page. Those sentences are what keep an agent from adding its usual decoration.
+
+## Where to Get One
+
+**[shadcn.io/design](https://www.shadcn.io/design)** has about 500 systems reverse-engineered from public brand sites: Linear, Stripe, Apple, Vercel, Notion, Figma, Ferrari, Spotify, and more. Each page shows a live mockup, and the raw file is at a predictable URL:
+
+```bash
+curl -sL https://www.shadcn.io/design/linear/raw -o DESIGN.md
+```
+
+These are reconstructions, so some are labeled "Inspired". Each file ends with a **Known Gaps** section listing what couldn't be observed, such as form validation states or a light mode. Read it before you trust the file blindly.
+
+**[ui-skills.com/design-md](https://www.ui-skills.com/design-md)** is different: it collects `DESIGN.md` files the companies published themselves. Examples include Vercel, Atlassian, Clerk, Mintlify, Nuxt, Ant Design, Oxide Computer, and the French government's DSFR. Real files tend to go further than tokens. Vercel's is mostly about composition, with rules like:
+
+> Before designing, privately name the obvious layout the artifact category would suggest. Reject it unless the material earns it.
+
+That one line fights the generic-AI layout better than any color choice.
+
+ui-skills also publishes agent skills for the parts a spec doesn't cover:
+
+```bash
+npx ui-skills list                      # browse the registry
+npx ui-skills get baseline-ui           # print one skill as Markdown
+npx skills add https://github.com/ibelick/ui-skills --skill create-design-md
+```
+
+`create-design-md` writes a `DESIGN.md` from an existing repo or public website, using only tokens it can find evidence for. Other skills in the registry, like `improve-ui`, `make-interfaces-feel-better`, and `improve-animations`, cover polish and motion.
+
+[designmd.co](https://www.designmd.co/catalog) is another catalog in the same vein.
+
+## The Recipe
+
+**1. Download a reference and drop it at the repo root.**
+
+```bash
+curl -sL https://www.shadcn.io/design/stripe/raw -o DESIGN.md
+```
+
+**2. Make it yours.** Change `name`, swap `primary` for your own color, and replace proprietary fonts. Linear's spec itself suggests Inter or Geist as substitutes for its custom typefaces. Change at least one structural decision too, such as the radius or the canvas. Borrow the system, but leave the logo, product name, illustrations, and copy behind.
+
+**3. Validate it.** Google's CLI checks for broken token references, WCAG contrast failures in component color pairs, tokens no component uses, and sections out of order:
+
+```bash
+npx @google/design.md lint DESIGN.md
+npx @google/design.md diff DESIGN.md DESIGN-v2.md   # what changed between versions
+```
+
+**4. Export the tokens** so the code uses the real values instead of the agent's guesses:
+
+```bash
+npx @google/design.md export --format json-tailwind DESIGN.md > tailwind.theme.json  # Tailwind v3
+npx @google/design.md export --format css-tailwind  DESIGN.md > theme.css            # Tailwind v4 @theme
+npx @google/design.md export --format dtcg          DESIGN.md > tokens.json          # W3C tokens
+```
+
+**5. Point Claude at it** with one line in `CLAUDE.md` or `AGENTS.md`:
+
+```markdown
+All UI follows DESIGN.md. Use only its tokens and components. If something
+isn't covered, ask instead of inventing a value.
+```
+
+**6. Build the parts before the pages.** This is the step people skip:
+
+```
+Read DESIGN.md. Build /styleguide with every component it defines, in every
+state (default, hover, pressed, disabled), plus a form, a table and the nav.
+No page content yet.
+```
+
+Fix the style guide first. Pages assembled from approved parts inherit the system, while pages built straight from the spec drift.
+
+**7. Review with screenshots.**
+
+```
+Screenshot /styleguide and the home page at 390px and 1440px. Check each
+against DESIGN.md section by section and list every deviation before fixing.
+```
+
+## Mix, Don't Clone
+
+A copied system makes your site look like Stripe, which is just a different kind of generic. The more interesting move is to combine:
+
+- **Tokens from one source, composition from another:** for example, Linear's dark surface ladder with the editorial layout rules from Vercel's file.
+- **The prose is the part to rewrite.** Tokens are easy to swap. The Overview and Do's and Don'ts are where your product's personality goes.
+- **Write prohibitions as rules,** like "no second accent color" or "secondary actions are text links, not buttons". Agents follow concrete rules more reliably than descriptions of a mood.
+
+## A Real Example: This Site
+
+This site now has a [`DESIGN.md`](https://github.com/julianusor/julianusor.github.io/blob/main/DESIGN.md), written from its Tailwind config. The core of it:
+
+```yaml
+colors:
+  primary: "#B4532A"     # terracotta, links and hover only
+  canvas: "#FBF8F3"      # warm paper
+  ink: "#201B15"         # espresso
+  hairline: "#E7D9C4"
+rounded:
+  none: 0px              # the whole shape language in one token
+components:
+  button-primary:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.on-ink}"
+    typography: "{typography.label}"   # JetBrains Mono, 11px, uppercase
+    rounded: "{rounded.none}"
+    padding: 12px 20px
+```
+
+Writing it caught a real problem. The 10px tags on the home page use `#98805D` on the paper background, which is 3.55:1 contrast, and some metadata uses `#B89E77` at 2.42:1. Both are below the 4.5:1 that WCAG AA requires. The spec now sets tags to `#72614A` (5.62:1). That's the main payoff of making a design system explicit: once the rules are written down, you can check against them, and so can an agent.
