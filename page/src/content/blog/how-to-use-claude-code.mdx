@@ -125,19 +125,14 @@ Key events: `UserPromptSubmit` (inject context), `PreToolUse` / `PostToolUse` (b
 
 Bundled skills worth knowing: `/verify`, `/simplify`, `/dataviz`, `/design`, `/deep-research` — and `/skill-doctor`, which shows which loaded skills go unused and what they cost in context. Prune aggressively. Custom skills are a `SKILL.md` in `~/.claude/skills/<name>/`, invocable as `/<name>`.
 
-## Designs That Don't Look AI-Made
-
-Without a design spec, every agent produces the same purple-gradient, pill-button, three-feature-card page. The fix is a `DESIGN.md` that covers tokens, shape, components, layout, and voice — enough of a topic that it got [its own post](/blog/designs-that-dont-look-ai-made/).
-
 ## A Sane Default Workflow
 
 1. `/init` once per repo.
 2. Plan mode for anything non-trivial.
 3. Research goes to subagents (on cheaper models); the main thread stays for decisions.
-4. A `DESIGN.md` before any UI work.
-5. `/code-review` before every PR, `/security-review` when it matters.
-6. Hooks for anything repeated; `/skill-doctor` when sessions feel bloated.
-7. `/usage` and `/compact` to stay cheap on long sessions.
+4. `/code-review` before every PR, `/security-review` when it matters.
+5. Hooks for anything repeated; `/skill-doctor` when sessions feel bloated.
+6. `/usage` and `/compact` to stay cheap on long sessions.
 
 ## Resources
 
