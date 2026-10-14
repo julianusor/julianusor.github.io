@@ -4,16 +4,42 @@ author: Julian Úsuga
 date: 2026-02-10
 modified: 2026-10-14
 categories: [howto, claude, tools]
-description: The compact October 2026 edition — setup once, the commands that earn their keep, subagents and mixing models, hooks, designs that don't look AI-made, and a sane default workflow.
+description: The compact October 2026 edition — setup once, CLAUDE.md vs AGENTS.md, the commands that earn their keep, subagents and mixing models, hooks, and a sane default workflow.
 image: /posts/how-to-use-claude-code/claude-code-guide-cover.png
 ---
 
 ## The 5-Minute Setup
 
-1. **`/init` once per repo.** Generates `CLAUDE.md` so every session starts with project context.
+1. **`/init` once per repo.** Generates `CLAUDE.md` so every session starts with project context (or reuse an existing `AGENTS.md` — see below).
 2. **Plan mode for anything non-trivial** (Shift+Tab). Claude reads and proposes; nothing gets touched until you approve the plan.
 3. **One hook** for the thing you'd otherwise repeat every session — a formatter, a linter. See below.
 4. **`/doctor`** if anything feels off. It diagnoses installs, PATH problems, settings, and slow hooks.
+
+## Project Instructions: CLAUDE.md or AGENTS.md
+
+Every session starts from zero. The instruction file is how it starts from your project instead.
+
+**Which file.** `AGENTS.md` is the cross-tool standard (Codex, Cursor, Gemini), and Claude Code reads it natively since v2.1.277. `CLAUDE.md` still works and wins by default:
+
+| Your repo has | Claude reads |
+| :- | :- |
+| Only `AGENTS.md` | `AGENTS.md` |
+| `AGENTS.md` and `CLAUDE.md` | `CLAUDE.md` only |
+| `CLAUDE.md` containing `@AGENTS.md` | Both, through the import |
+
+If you use several agents, keep everything in `AGENTS.md` and add a `CLAUDE.md` only for Claude-specific lines, starting with `@AGENTS.md`. If you only use Claude Code, `CLAUDE.md` is fine. One trap: a personal `CLAUDE.local.md` also counts, so adding one silently stops `AGENTS.md` from loading. Change the default in `/config` → **Project instructions**.
+
+**What goes in.** What Claude can't cheaply figure out by reading the code:
+
+- The commands: build, test, lint, and the flags that matter.
+- Non-obvious architecture: where things live, what's generated, what not to touch.
+- Conventions the linter doesn't enforce, and the gotchas that already cost you an afternoon.
+
+**What stays out.** Anything a linter or formatter already enforces, anything obvious from the code, and long docs — link them instead. The file loads into every session and every turn pays for it.
+
+**Keep it alive.** Short and specific beats long and complete. When you correct Claude twice on the same thing, add a line. When a rule applies only to some files, move it to `.claude/rules/` with a path scope. Claude also keeps its own auto memory of your corrections, and `/doctor prompt-audit` reviews all of these files for bloat and contradictions.
+
+Instructions are context, not enforcement. If something must never happen, make it a hook.
 
 ## Commands That Earn Their Keep
 
@@ -101,17 +127,7 @@ Bundled skills worth knowing: `/verify`, `/simplify`, `/dataviz`, `/design`, `/d
 
 ## Designs That Don't Look AI-Made
 
-Ask for "a modern landing page" and you get the house style: purple gradient, rounded cards, soft shadows, an emoji per feature. The model isn't lacking taste; it's lacking constraints. Give it a design spec and the output follows the spec.
-
-The convention for that spec is a **`DESIGN.md`**: one Markdown file with the color tokens, type scale, spacing, component rules, and a do/don't list. Catalogs like [designmd.co](https://www.designmd.co/catalog), [ui-skills.com](https://www.ui-skills.com/design-md), and [shadcn.io/design](https://www.shadcn.io/design) publish ready-made ones that capture the look of well-known products.
-
-1. **Pick a reference** whose feel fits your project, and copy its `DESIGN.md` into the repo root.
-2. **Point Claude at it** from `CLAUDE.md`: "All UI follows `DESIGN.md`. Use only its tokens; no colors, radii, or shadows outside it."
-3. **Make it yours.** Swap in your own accent color and fonts. A borrowed system is a starting point; the logo, name, and imagery stay the original brand's.
-4. **Write the don'ts.** Rules like "no rounded corners", "no gradients", "borders, not shadows" do more than adjectives like "clean" or "minimal".
-5. **Check against it.** Have Claude screenshot the result and compare it to the spec, then fix the drift.
-
-You don't need a catalog to do this. This site's `CLAUDE.md` has a one-paragraph "Visual style" section — hairline borders, a single accent, mono uppercase labels, never `rounded-*` or `shadow-*` — and that alone keeps new pages consistent.
+Without a design spec, every agent produces the same purple-gradient, pill-button, three-feature-card page. The fix is a `DESIGN.md` that covers tokens, shape, components, layout, and voice — enough of a topic that it got [its own post](/blog/designs-that-dont-look-ai-made/).
 
 ## A Sane Default Workflow
 
@@ -127,6 +143,7 @@ You don't need a catalog to do this. This site's `CLAUDE.md` has a one-paragraph
 
 - [Claude Code docs](https://code.claude.com/docs) — official documentation
 - [Commands](https://code.claude.com/docs/en/commands) — full command reference
+- [Memory](https://code.claude.com/docs/en/memory) — CLAUDE.md, AGENTS.md, and auto memory
 - [Subagents](https://code.claude.com/docs/en/sub-agents) — frontmatter fields and model selection
 - [Hooks](https://code.claude.com/docs/en/hooks) — events and examples
 - [Changelog](https://code.claude.com/docs/en/changelog) — what changed recently
