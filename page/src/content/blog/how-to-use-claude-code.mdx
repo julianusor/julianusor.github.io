@@ -2,9 +2,9 @@
 title: How to Use Claude Code
 author: Julian Úsuga
 date: 2026-02-10
-modified: 2026-09-10
+modified: 2026-10-14
 categories: [howto, claude, tools]
-description: The compact September 2026 edition — setup once, the commands that earn their keep, subagents, hooks, and a sane default workflow.
+description: The compact October 2026 edition — setup once, the commands that earn their keep, subagents and mixing models, hooks, designs that don't look AI-made, and a sane default workflow.
 image: /posts/how-to-use-claude-code/claude-code-guide-cover.png
 ---
 
@@ -48,6 +48,34 @@ Brief them like a colleague who just walked in: goal in one sentence, what you a
 
 **When to parallelize:** independent reads across the codebase — yes. Dependent steps ("write the schema, then the migration") — no, the second starts stale. If you can't write prompts that don't reference each other, it's one sequential task, not three parallel ones.
 
+## Mixing Models: Opus Orchestrates, Others Work
+
+A common setup: the expensive model plans and decides, cheaper models do the legwork. By default subagents inherit your main model, so this only happens if you ask for it.
+
+First, a misreading to avoid: if `/cost` shows a few cents of Haiku you never requested, that's Claude Code's own housekeeping (session titles, summarizing web search results), not subagents doing work.
+
+**Other Claude models as workers.** Pin a model in the agent's frontmatter, in `.claude/agents/` (project) or `~/.claude/agents/` (user):
+
+```markdown
+---
+name: explorer
+description: Searches the codebase and reports conclusions. Use for broad discovery.
+model: haiku
+tools: Read, Grep, Glob
+---
+Find what was asked for. Return conclusions and file paths, not file dumps.
+```
+
+`model` takes `haiku`, `sonnet`, `opus`, `fable`, a full ID like `claude-opus-5-5`, or `inherit`. You can also just say it in the prompt ("spin up three Sonnet subagents for X, Y, Z"). For a blanket default, set `CLAUDE_CODE_SUBAGENT_MODEL` in settings; it skips the built-in Explore and Plan agents unless you also set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`. A split that works: Opus plans and reviews, Sonnet implements, Haiku searches.
+
+**Non-Claude models as workers.** Not native, but three routes work:
+
+1. **Shell out.** Most model CLIs have a headless mode (`codex exec "..."`, `gemini -p "..."`). Opus runs it through Bash and reads the output. Wrap it in a skill so it's repeatable.
+2. **MCP.** Register another model as a tool (`claude mcp add codex -- codex mcp-server`), and Opus calls it like any other tool.
+3. **A router.** Proxies like claude-code-router or LiteLLM sit behind `ANTHROPIC_BASE_URL` and send some requests to other providers. The most flexible and the most fragile: tool-calling quirks surface as odd failures.
+
+Start with 1 or 2. Keep the orchestrator responsible for reviewing what comes back — a cheap worker's output is a draft, not a decision.
+
 ## Hooks: Making Behavior Stick
 
 "Always run the linter before committing" lasts two messages as a prompt. As a hook, it lasts forever. Hooks live in `~/.claude/settings.json` (user) or `.claude/settings.json` (project), and the harness runs them — they can't be forgotten.
@@ -71,19 +99,35 @@ Key events: `UserPromptSubmit` (inject context), `PreToolUse` / `PostToolUse` (b
 
 Bundled skills worth knowing: `/verify`, `/simplify`, `/dataviz`, `/design`, `/deep-research` — and `/skill-doctor`, which shows which loaded skills go unused and what they cost in context. Prune aggressively. Custom skills are a `SKILL.md` in `~/.claude/skills/<name>/`, invocable as `/<name>`.
 
+## Designs That Don't Look AI-Made
+
+Ask for "a modern landing page" and you get the house style: purple gradient, rounded cards, soft shadows, an emoji per feature. The model isn't lacking taste; it's lacking constraints. Give it a design spec and the output follows the spec.
+
+The convention for that spec is a **`DESIGN.md`**: one Markdown file with the color tokens, type scale, spacing, component rules, and a do/don't list. Catalogs like [designmd.co](https://www.designmd.co/catalog), [ui-skills.com](https://www.ui-skills.com/design-md), and [shadcn.io/design](https://www.shadcn.io/design) publish ready-made ones that capture the look of well-known products.
+
+1. **Pick a reference** whose feel fits your project, and copy its `DESIGN.md` into the repo root.
+2. **Point Claude at it** from `CLAUDE.md`: "All UI follows `DESIGN.md`. Use only its tokens; no colors, radii, or shadows outside it."
+3. **Make it yours.** Swap in your own accent color and fonts. A borrowed system is a starting point; the logo, name, and imagery stay the original brand's.
+4. **Write the don'ts.** Rules like "no rounded corners", "no gradients", "borders, not shadows" do more than adjectives like "clean" or "minimal".
+5. **Check against it.** Have Claude screenshot the result and compare it to the spec, then fix the drift.
+
+You don't need a catalog to do this. This site's `CLAUDE.md` has a one-paragraph "Visual style" section — hairline borders, a single accent, mono uppercase labels, never `rounded-*` or `shadow-*` — and that alone keeps new pages consistent.
+
 ## A Sane Default Workflow
 
 1. `/init` once per repo.
 2. Plan mode for anything non-trivial.
-3. Research goes to subagents; the main thread stays for decisions.
-4. `/code-review` before every PR, `/security-review` when it matters.
-5. Hooks for anything repeated; `/skill-doctor` when sessions feel bloated.
-6. `/usage` and `/compact` to stay cheap on long sessions.
+3. Research goes to subagents (on cheaper models); the main thread stays for decisions.
+4. A `DESIGN.md` before any UI work.
+5. `/code-review` before every PR, `/security-review` when it matters.
+6. Hooks for anything repeated; `/skill-doctor` when sessions feel bloated.
+7. `/usage` and `/compact` to stay cheap on long sessions.
 
 ## Resources
 
 - [Claude Code docs](https://code.claude.com/docs) — official documentation
 - [Commands](https://code.claude.com/docs/en/commands) — full command reference
+- [Subagents](https://code.claude.com/docs/en/sub-agents) — frontmatter fields and model selection
 - [Hooks](https://code.claude.com/docs/en/hooks) — events and examples
 - [Changelog](https://code.claude.com/docs/en/changelog) — what changed recently
 
